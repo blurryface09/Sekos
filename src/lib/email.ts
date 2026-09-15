@@ -123,3 +123,19 @@ export async function sendInvite(options: {
     ),
   );
 }
+
+export async function sendJoined(options: {
+  to: string;
+  who: string;
+  url: string;
+}): Promise<void> {
+  await send(
+    options.to,
+    `${options.who} is in`,
+    shell(
+      `${options.who} is in`,
+      "<p style='margin:0'>Whatever either of you adds from here, you both see.</p>",
+      { href: options.url, label: "Open it" },
+    ),
+  );
+}
