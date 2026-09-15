@@ -76,7 +76,7 @@ export default async function UsPage() {
       <header className="masthead">
         <p className="label">{space.name}</p>
         <h1>
-          Somewhere <em>with</em> you
+          Somewhere <i>with</i> you
         </h1>
         <p style={{ color: "var(--ink-2)", margin: 0, fontSize: 15 }}>
           {partner
@@ -84,22 +84,22 @@ export default async function UsPage() {
             : "Just you so far. Bring her in from settings."}
         </p>
 
-        <div className="stats">
-          <div className="stat">
+        <div className="tally">
+          <div className="tallyItem">
             <b>{views.length}</b>
             <span className="label">plans</span>
           </div>
-          <div className="stat">
+          <div className="tallyItem">
             <b>{kept.length}</b>
             <span className="label">we went</span>
           </div>
-          <div className="stat">
+          <div className="tallyItem">
             <b>
               {ticked}/{allItems.length}
             </b>
             <span className="label">sorted</span>
           </div>
-          <div className="stat">
+          <div className="tallyItem">
             <b>{next?.daysAway ?? "—"}</b>
             <span className="label">days to next</span>
           </div>
@@ -107,7 +107,7 @@ export default async function UsPage() {
       </header>
 
       {next ? (
-        <section className="nextup">
+        <section className="upnext">
           <div className="count">
             {next.daysAway === 0 ? "today" : next.daysAway}
             <small>
@@ -136,8 +136,8 @@ export default async function UsPage() {
         </section>
       ) : null}
 
-      <div className="sechead">
-        <h2 className="label" style={{ fontFamily: "var(--label)" }}>
+      <div className="band">
+        <h2 className="label">
           Coming up
         </h2>
         <div className="rule" />
@@ -151,18 +151,17 @@ export default async function UsPage() {
           ))}
         </div>
       ) : (
-        <div className="empty">
+        <div className="blank">
           <p style={{ margin: 0, color: "var(--ink-2)" }}>
-            Nothing ahead of you yet. Add the first one, even if the date is a
-            guess. A plan with a bad date beats a plan you keep meaning to make.
+            Nothing here yet. Add the first one, a guessed date is fine.
           </p>
         </div>
       )}
 
       {missed.length ? (
         <>
-          <div className="sechead">
-            <h2 className="label" style={{ fontFamily: "var(--label)" }}>
+          <div className="band">
+            <h2 className="label">
               Slipped past
             </h2>
             <div className="rule" />
@@ -177,8 +176,8 @@ export default async function UsPage() {
 
       {kept.length ? (
         <>
-          <div className="sechead">
-            <h2 className="label" style={{ fontFamily: "var(--label)" }}>
+          <div className="band">
+            <h2 className="label">
               Where we have been
             </h2>
             <div className="rule" />

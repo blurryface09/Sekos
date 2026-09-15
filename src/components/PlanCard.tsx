@@ -35,12 +35,12 @@ export type PlanView = {
 };
 
 function statusPill(plan: PlanView) {
-  if (plan.status === "DONE") return <span className="pill warm">we went</span>;
-  if (plan.daysAway === null) return <span className="pill">no date yet</span>;
-  if (plan.daysAway < 0) return <span className="pill late">missed it</span>;
-  if (plan.daysAway === 0) return <span className="pill warm">today</span>;
-  if (plan.daysAway === 1) return <span className="pill warm">tomorrow</span>;
-  if (plan.daysAway <= 7) return <span className="pill warm">this week</span>;
+  if (plan.status === "DONE") return <span className="tag warm">we went</span>;
+  if (plan.daysAway === null) return <span className="tag">no date yet</span>;
+  if (plan.daysAway < 0) return <span className="tag late">missed it</span>;
+  if (plan.daysAway === 0) return <span className="tag warm">today</span>;
+  if (plan.daysAway === 1) return <span className="tag warm">tomorrow</span>;
+  if (plan.daysAway <= 7) return <span className="tag warm">this week</span>;
   return null;
 }
 
@@ -94,7 +94,7 @@ export function PlanCard({ plan }: { plan: PlanView }) {
           <h3>{plan.title}</h3>
           {statusPill(plan)}
           {plan.movedCount > 0 ? (
-            <span className="pill">
+            <span className="tag">
               moved {plan.movedCount === 1 ? "once" : `${plan.movedCount} times`}
             </span>
           ) : null}
@@ -139,7 +139,7 @@ export function PlanCard({ plan }: { plan: PlanView }) {
             id={`add-${plan.id}`}
             name="text"
             maxLength={120}
-            placeholder="add a thing to sort"
+            placeholder="add something"
             aria-label="Add something to sort"
           />
           <button className="btn quiet" type="submit">add</button>
@@ -191,15 +191,15 @@ export function PlanCard({ plan }: { plan: PlanView }) {
           >
             <input type="hidden" name="planId" value={plan.id} />
             <label className="field">
-              <span>What was it actually like</span>
+              <span>How it went</span>
               <textarea
                 name="body"
                 defaultValue={plan.entry?.body ?? ""}
-                placeholder="The thing she said about the rain. The way you laughed at the waiter."
-                style={{ minHeight: 120, fontFamily: "var(--display)", fontSize: 16 }}
+                placeholder="What happened"
+                style={{ minHeight: 130, fontFamily: "var(--hand)", fontSize: 21 }}
               />
             </label>
-            <div className="sheetfoot">
+            <div className="panelfoot">
               <button className="btn solid" type="submit">Keep this</button>
               <button type="button" className="btn" onClick={() => setWriting(false)}>
                 Cancel
@@ -209,10 +209,10 @@ export function PlanCard({ plan }: { plan: PlanView }) {
         ) : null}
 
         <div className="foot">
-          <span className="pill">
+          <span className="tag">
             {ticked}/{plan.items.length} sorted
           </span>
-          <span className="spacer" />
+          <span className="grow" />
 
           {missed ? <Reschedule id={plan.id} hasDate={Boolean(plan.dateInput)} /> : null}
 

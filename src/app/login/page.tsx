@@ -11,16 +11,11 @@ export default function LoginPage() {
   return (
     <main className="shell" style={{ maxWidth: 440, paddingBlock: "18vh 40px" }}>
       <p className="label">Sekos</p>
-      <h1 style={{ fontSize: 44, lineHeight: 1.02, marginTop: 14 }}>
-        Somewhere{" "}
-        <span style={{ fontStyle: "italic", fontWeight: 400, color: "var(--rose)" }}>
-          with
-        </span>{" "}
-        you
+      <h1 className="bigtitle">
+        Somewhere <i>with</i> you
       </h1>
       <p style={{ color: "var(--ink-2)", marginTop: 14, marginBottom: 32 }}>
-        The places you keep saying you should go, and what happened when you
-        finally went.
+        Where you are going, and where you have been.
       </p>
 
       <form action={action} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -53,7 +48,7 @@ export default function LoginPage() {
       ) : null}
 
       <p style={{ marginTop: 40, fontSize: 13, color: "var(--ink-3)" }}>
-        No password to forget. The link signs you in and then stops working.
+        No password. The link signs you in, then stops working.
       </p>
     </main>
   );

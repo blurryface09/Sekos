@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { Sprigs } from "@/components/Sprigs";
+import { Petals } from "@/components/Petals";
 
 export const metadata: Metadata = {
   title: "Somewhere With You",
@@ -11,8 +13,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFF6F9" },
-    { media: "(prefers-color-scheme: dark)", color: "#1B1016" },
+    { media: "(prefers-color-scheme: light)", color: "#FCF4F6" },
+    { media: "(prefers-color-scheme: dark)", color: "#160E13" },
   ],
   viewportFit: "cover",
 };
@@ -31,10 +33,14 @@ export default function RootLayout({
         />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Karla:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Karla:wght@400;500;700&family=Caveat:wght@400;600&display=swap"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <Sprigs />
+        <Petals />
+        {children}
+      </body>
     </html>
   );
 }

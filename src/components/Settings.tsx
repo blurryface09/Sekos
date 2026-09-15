@@ -48,13 +48,13 @@ export function Settings({
   }
 
   return (
-    <div className="sheet" style={{ marginTop: 20 }}>
+    <div className="panel" style={{ marginTop: 20 }}>
       <h3 style={{ fontSize: 20, marginBottom: 6 }}>Settings</h3>
-      <p className="hint" style={{ marginTop: 0, marginBottom: 20 }}>
-        Names, reminders and the calendar feed.
+      <p className="hint" style={{ marginTop: 0, marginBottom: 22 }}>
+        Names, the calendar feed, and who else is in.
       </p>
 
-      <form action={saveNames} className="grid">
+      <form action={saveNames} className="cols">
         <label className="field">
           <span>Your name</span>
           <input name="name" defaultValue={myName} maxLength={40} placeholder="Samuel" />
@@ -67,7 +67,7 @@ export function Settings({
           <span>Timezone</span>
           <input name="timezone" defaultValue={timezone} placeholder="Africa/Lagos" />
         </label>
-        <div className="full">
+        <div className="wide">
           <button className="btn solid" type="submit">Save</button>
         </div>
       </form>
@@ -81,8 +81,8 @@ export function Settings({
         your home screen. Do not import it as a file, subscribe to it, otherwise
         it stops updating.
       </p>
-      <div className="mono-box" style={{ marginTop: 10 }}>{feedUrl}</div>
-      <div className="sheetfoot">
+      <div className="copybox" style={{ marginTop: 10 }}>{feedUrl}</div>
+      <div className="panelfoot">
         <button type="button" className="btn" onClick={() => copy(feedUrl, "feed")}>
           {copied === "feed" ? "Copied" : "Copy the link"}
         </button>
@@ -101,11 +101,11 @@ export function Settings({
       </h4>
       {partner ? (
         <p className="hint" style={{ marginTop: 0 }}>
-          You both see the same plans, the same ticks and the same diary.
+          You both see the same plans, ticks and entries.
         </p>
       ) : (
         <>
-          <form action={sendInvite} className="grid" style={{ marginBottom: 12 }}>
+          <form action={sendInvite} className="cols" style={{ marginBottom: 12 }}>
             <label className="field">
               <span>Send the invite to</span>
               <input
@@ -134,8 +134,8 @@ export function Settings({
               {invite.message}
             </p>
           ) : null}
-          <div className="mono-box">{inviteUrl}</div>
-          <div className="sheetfoot">
+          <div className="copybox">{inviteUrl}</div>
+          <div className="panelfoot">
             <button type="button" className="btn" onClick={() => copy(inviteUrl, "invite")}>
               {copied === "invite" ? "Copied" : "Copy the invite link"}
             </button>
@@ -145,11 +145,11 @@ export function Settings({
 
       <hr style={{ border: 0, borderTop: "1px solid var(--line)", margin: "24px 0" }} />
 
-      <div className="sheetfoot">
+      <div className="panelfoot">
         <button type="button" className="btn" onClick={() => setOpen(false)}>
           Close
         </button>
-        <span className="spacer" />
+        <span className="grow" />
         <form action={signOut}>
           <button className="btn quiet" type="submit">Sign out</button>
         </form>

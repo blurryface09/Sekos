@@ -34,7 +34,7 @@ export function PlanForm({
 
   return (
     <form
-      className="sheet"
+      className="panel"
       action={async (formData) => {
         setBusy(true);
         try {
@@ -46,31 +46,31 @@ export function PlanForm({
         }
       }}
     >
-      <h3 style={{ fontSize: 20, marginBottom: 16 }}>
-        {editing ? "Change this one" : "Where are we going?"}
+      <h3 style={{ fontSize: 24, marginBottom: 18 }}>
+        {editing ? "Edit" : "Somewhere new"}
       </h3>
 
       {existing ? <input type="hidden" name="id" value={existing.id} /> : null}
 
-      <div className="grid">
-        <label className="field full">
+      <div className="cols">
+        <label className="field wide">
           <span>What is it</span>
           <input
             name="title"
             required
             maxLength={120}
             defaultValue={existing?.title ?? ""}
-            placeholder="Rooftop dinner, no phones"
+            placeholder="Dinner somewhere new"
           />
         </label>
 
-        <label className="field full">
+        <label className="field wide">
           <span>Where</span>
           <input
             name="place"
             maxLength={160}
             defaultValue={existing?.place ?? ""}
-            placeholder="Nok by Alara, Victoria Island"
+            placeholder="The place"
           />
         </label>
 
@@ -108,28 +108,28 @@ export function PlanForm({
           </select>
         </label>
 
-        <label className="field full">
-          <span>A note, just for us</span>
+        <label className="field wide">
+          <span>Note</span>
           <textarea
             name="note"
             maxLength={600}
             defaultValue={existing?.note ?? ""}
-            placeholder="Why this one. What you said about it."
+            placeholder="Anything worth remembering about it"
           />
         </label>
 
         {editing ? null : (
-          <label className="field full">
+          <label className="field wide">
             <span>Things to sort, one per line</span>
             <textarea
               name="items"
-              placeholder={"book the table\ncharge the camera\npick the playlist"}
+              placeholder={"book it\nsort transport"}
             />
           </label>
         )}
       </div>
 
-      <div className="sheetfoot">
+      <div className="panelfoot">
         <button className="btn solid" type="submit" disabled={busy}>
           {busy ? "Saving" : editing ? "Save changes" : "Add it"}
         </button>
@@ -138,8 +138,7 @@ export function PlanForm({
             Cancel
           </button>
         ) : null}
-        <span className="spacer" />
-        <span className="hint">Reminders reach both of you.</span>
+        <span className="grow" />
       </div>
     </form>
   );

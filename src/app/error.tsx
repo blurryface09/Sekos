@@ -21,7 +21,7 @@ export default function Error({
         Nothing you did caused this and nothing was lost. Try again, and if it
         keeps happening the reference below says what went wrong.
       </p>
-      <div className="sheetfoot">
+      <div className="panelfoot">
         <button className="btn solid" type="button" onClick={reset}>
           Try again
         </button>
