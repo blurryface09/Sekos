@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+
+  memberships    Membership[]
+  loginTokens    LoginToken[]
+  writtenEntries DiaryEntry[]
+  uploadedPhotos Photo[]
+  createdPlans   Plan[]
+}
+
+model LoginToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+/// A shared space for two people. Kept as a group rather than a pair so the
+/// same model can hold friends or family later without a migration.
+model Space {
+  id         String   @id @default(cuid())
+  name       String   @default("Us")
+  /// Random path segment for the private calendar feed.
+  feedSecret String   @unique
+  inviteCode String   @unique
+  timezone   String   @default("Africa/Lagos")
+  createdAt  DateTime @default(now())
+
+  members Membership[]
+  plans   Plan[]
+}
+
+model Membership {
+  id       String   @id @default(cuid())
+  userId   String
+  spaceId  String
+  joinedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  space Space @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, spaceId])
+  @@index([spaceId])
+}
+
+enum PlanStatus {
+  PLANNED
+  DONE
+  SKIPPED
+}
+
+model Plan {
+  id      String @id @default(cuid())
+  spaceId String
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  title     String
+  place     String?
+  /// Calendar day in the space timezone, stored at midnight UTC.
+  date      DateTime?
+  /// Local start time as "HH:MM". Null means the whole day.
+  startTime String?
+  note      String?
+
+  status           PlanStatus @default(PLANNED)
+  /// Days before the date to send the reminder. Null turns reminders off.
+  remindDaysBefore Int?       @default(1)
+
+  /// Every date this plan has held before the current one.
+  previousDates DateTime[] @default([])
+
+  createdById String?
+  createdBy   User?    @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items     ChecklistItem[]
+  photos    Photo[]
+  entry     DiaryEntry?
+  reminders ReminderSent[]
+
+  @@index([spaceId, date])
+}
+
+model ChecklistItem {
+  id       String  @id @default(cuid())
+  planId   String
+  plan     Plan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  text     String
+  done     Boolean @default(false)
+  position Int     @default(0)
+
+  @@index([planId])
+}
+
+model Photo {
+  id           String   @id @default(cuid())
+  planId       String
+  plan         Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  /// Object key in the bucket.
+  key          String
+  url          String
+  caption      String?
+  uploadedById String?
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+
+  @@index([planId])
+}
+
+/// What it was actually like. Written after the fact.
+model DiaryEntry {
+  id          String   @id @default(cuid())
+  planId      String   @unique
+  plan        Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  body        String
+  writtenById String?
+  writtenBy   User?    @relation(fields: [writtenById], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+/// One row per reminder actually delivered, so the daily job never sends twice.
+model ReminderSent {
+  id     String   @id @default(cuid())
+  planId String
+  plan   Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  kind   String
+  sentAt DateTime @default(now())
+
+  @@unique([planId, kind])
+}
