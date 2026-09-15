@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { env } from "@/lib/env";
 
 const PINK = "#D2447A";
@@ -28,19 +29,43 @@ function shell(title: string, body: string, action?: { href: string; label: stri
 </body></html>`;
 }
 
+/**
+ * Gmail first, because it delivers to anybody without owning a domain, which
+ * is what a two person app needs before it is worth paying for one. Resend
+ * takes over the moment a verified domain exists.
+ */
 async function send(to: string, subject: string, html: string): Promise<void> {
-  if (!env.resendKey) {
-    console.warn(`[email] RESEND_API_KEY not set. Would have sent "${subject}" to ${to}`);
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPassword = process.env.GMAIL_APP_PASSWORD;
+
+  if (gmailUser && gmailPassword) {
+    const transport = nodemailer.createTransport({
+      service: "gmail",
+      auth: { user: gmailUser, pass: gmailPassword.replace(/\s+/g, "") },
+    });
+
+    await transport.sendMail({
+      from: process.env.EMAIL_FROM || `Somewhere <${gmailUser}>`,
+      to,
+      subject,
+      html,
+    });
     return;
   }
-  const resend = new Resend(env.resendKey);
-  const { error } = await resend.emails.send({
-    from: env.emailFrom,
-    to,
-    subject,
-    html,
-  });
-  if (error) throw new Error(`Resend refused the message: ${error.message}`);
+
+  if (env.resendKey) {
+    const resend = new Resend(env.resendKey);
+    const { error } = await resend.emails.send({
+      from: env.emailFrom,
+      to,
+      subject,
+      html,
+    });
+    if (error) throw new Error(`Resend refused the message: ${error.message}`);
+    return;
+  }
+
+  console.warn(`[email] No mail transport configured. Would have sent "${subject}" to ${to}`);
 }
 
 export async function sendLoginLink(to: string, url: string): Promise<void> {

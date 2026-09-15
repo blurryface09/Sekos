@@ -272,19 +272,40 @@ export async function saveNames(formData: FormData): Promise<void> {
   refresh();
 }
 
-export async function invitePartner(formData: FormData): Promise<void> {
+export type InviteState = { message: string; ok: boolean };
+
+/**
+ * Mailing the invite is a convenience, not the mechanism. The link works
+ * whether or not the email goes through, so a refused send reports itself
+ * instead of taking the page down with it.
+ */
+export async function invitePartner(
+  _previous: InviteState,
+  formData: FormData,
+): Promise<InviteState> {
   const { user, space } = await context();
 
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return;
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    return { message: "That does not look like an email address.", ok: false };
+  }
 
-  await sendInvite({
-    to: email,
-    fromName: user.name ?? user.email.split("@")[0],
-    url: `${env.appUrl}/join/${space.inviteCode}`,
-  });
-
-  refresh();
+  try {
+    await sendInvite({
+      to: email,
+      fromName: user.name ?? user.email.split("@")[0],
+      url: `${env.appUrl}/join/${space.inviteCode}`,
+    });
+    refresh();
+    return { message: `Invite sent to ${email}.`, ok: true };
+  } catch (error) {
+    console.error("invite failed", error);
+    return {
+      message:
+        "The email would not send, most likely because the sender address is not verified yet. Copy the link below and send it to her yourself, it works either way.",
+      ok: false,
+    };
+  }
 }
 
 export async function signOut(): Promise<void> {

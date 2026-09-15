@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { saveNames, invitePartner, signOut } from "@/app/us/actions";
+import { useState, useActionState } from "react";
+import {
+  saveNames,
+  invitePartner,
+  signOut,
+  type InviteState,
+} from "@/app/us/actions";
+
+const noInviteYet: InviteState = { message: "", ok: false };
 
 export function Settings({
   myName,
@@ -20,6 +27,7 @@ export function Settings({
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState("");
+  const [invite, sendInvite, inviting] = useActionState(invitePartner, noInviteYet);
 
   async function copy(value: string, which: string) {
     try {
@@ -97,15 +105,35 @@ export function Settings({
         </p>
       ) : (
         <>
-          <form action={invitePartner} className="grid" style={{ marginBottom: 12 }}>
+          <form action={sendInvite} className="grid" style={{ marginBottom: 12 }}>
             <label className="field">
               <span>Send the invite to</span>
-              <input name="email" type="email" placeholder="her@example.com" />
+              <input
+                id="invite-email"
+                name="email"
+                type="email"
+                placeholder="her@example.com"
+              />
             </label>
             <div className="field" style={{ justifyContent: "flex-end" }}>
-              <button className="btn solid" type="submit">Send it</button>
+              <button className="btn solid" type="submit" disabled={inviting}>
+                {inviting ? "Sending" : "Send it"}
+              </button>
             </div>
           </form>
+
+          {invite.message ? (
+            <p
+              className="hint"
+              style={{
+                marginTop: 0,
+                marginBottom: 12,
+                color: invite.ok ? "var(--rose-deep)" : "var(--ink-2)",
+              }}
+            >
+              {invite.message}
+            </p>
+          ) : null}
           <div className="mono-box">{inviteUrl}</div>
           <div className="sheetfoot">
             <button type="button" className="btn" onClick={() => copy(inviteUrl, "invite")}>

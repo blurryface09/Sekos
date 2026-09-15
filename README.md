@@ -39,8 +39,19 @@ npm run dev
 `AUTH_SECRET` and `CRON_SECRET` can each be generated with
 `openssl rand -base64 32`.
 
-Without `RESEND_API_KEY`, sign in links are printed to the server console
-instead of emailed, which is enough for local work.
+### Email
+
+Set `GMAIL_USER` and `GMAIL_APP_PASSWORD` and mail goes out through Gmail. This
+is the right choice until you own a domain, because it delivers to anybody.
+Switch on two factor authentication on the Google account, then generate an app
+password at myaccount.google.com/apppasswords.
+
+`RESEND_API_KEY` is used only when the Gmail pair is absent. Resend will not
+deliver to anyone except your own address until a sending domain is verified,
+so it is the wrong default for an app where two people both need to sign in.
+
+With neither set, mail is logged to the server console instead of sent, which
+is enough for local work.
 
 Photos need an S3 compatible bucket. Cloudflare R2 is the cheapest sensible
 option. Leave the S3 variables blank and everything else still works, the
